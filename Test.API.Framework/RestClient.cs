@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Text;
+using log4net;
 
 namespace Test.API.Framework
 {
@@ -21,6 +22,8 @@ namespace Test.API.Framework
 
         #region Constructor
 
+        ILog log = LogManager.GetLogger(typeof(RestClient));
+
         public RestClient()
         {
             baseAddress = ConfigurationManager.AppSettings["BaseAddress"];
@@ -31,8 +34,7 @@ namespace Test.API.Framework
         }
 
         #endregion
-
-
+        
         #region Methods
 
         /// <summary>
@@ -43,6 +45,8 @@ namespace Test.API.Framework
         /// <returns>Data binded to class.</returns>
         public T Get<T>(string path) where T : class
         {
+            log.Info(string.Format("Invoking GET call with path '{0}'", path));
+                
             return DoRestCall<T, T>(Verb.GET, path);
         }
 
@@ -56,6 +60,7 @@ namespace Test.API.Framework
         public TResult Post<T, TResult>(string path, T content) where T : class
              where TResult : class
         {
+            log.Info(string.Format("Invoking POST call with path '{0}'", path));
             return DoRestCall<T, TResult>(Verb.POST, path, content);
         }
 
@@ -65,6 +70,7 @@ namespace Test.API.Framework
         /// <param name="path">Query</param>
         public void Delete(string path)
         {
+            log.Info(string.Format("Invoking DELETE call with path '{0}'", path));
             DoRestCall<object, object>(Verb.DELETE, path, null, false);
         }
 
@@ -91,7 +97,7 @@ namespace Test.API.Framework
                 using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
                 {
                     var payload = JsonConvert.SerializeObject(content);
-                    //Helper.Log("Request payload: " + payload); TODO- Can use better logging here. Like log4N
+                    log.Info("Request payload: " + payload);
                     writer.Write(payload);
                 }
             }
@@ -103,7 +109,7 @@ namespace Test.API.Framework
                     using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                     {
                         var responsePayload = reader.ReadToEnd();
-                        //Helper.Log("Response payload: " + responsePayload); TODO- Can use better logging here. Like log4N
+                        log.Info("Response payload: " + responsePayload);
 
                         return JsonConvert.DeserializeObject<TResult>(responsePayload);
                     }

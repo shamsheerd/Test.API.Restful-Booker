@@ -9,7 +9,6 @@ namespace Test.API.Restful_Booker
     [TestClass]
     public class BookerTest : BaseTest
     {
-
         #region Test Methods
         
         [TestCategory("Booking"), Owner("TestAssignment"), Priority(1)]

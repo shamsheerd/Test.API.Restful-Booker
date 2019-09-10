@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using log4net;
 
 namespace Test.API.Framework
 {
@@ -13,6 +14,7 @@ namespace Test.API.Framework
         private static StringBuilder passedAssertions = new StringBuilder();
         private static int failedCount = 0;
         private static int passedCount = 0;
+        private static ILog log = LogManager.GetLogger(typeof(AssertManager));
 
         /// <summary>
         /// Execute all assertions in the list and clear the list.
@@ -40,7 +42,7 @@ namespace Test.API.Framework
             }
             catch (Exception ex)
             {
-                Helper.Log("AssertManager Execute->Error: " + ex.Message);
+                log.Error("AssertManager Execute->Error: " + ex.Message);
             }
             finally
             {
@@ -67,11 +69,12 @@ namespace Test.API.Framework
 
             try
             {
-                Helper.Log(passedAssertions.ToString());
+                log.Info(passedAssertions.ToString());
                 Assert.AreEqual(0, failedCount, failedAssertions.ToString());
             }
             catch (AssertFailedException ex)
             {
+                log.Error("ValidateTest Execute->Error: " + ex.Message);
                 throw ex;
             }
             finally
@@ -89,7 +92,7 @@ namespace Test.API.Framework
             }
             catch (Exception ex)
             {
-                Helper.Log("AssertList Add->Error: " + ex.Message);
+                log.Error("AssertList Add->Error: " + ex.Message);
             }
         }
 
@@ -139,7 +142,7 @@ namespace Test.API.Framework
             }
             catch (Exception ex)
             {
-                Helper.Log("AssertManager Clear->Error: " + ex.Message);
+                log.Error("AssertManager Clear->Error: " + ex.Message);
             }
         }
 

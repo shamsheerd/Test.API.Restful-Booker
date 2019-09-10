@@ -1,18 +1,44 @@
-﻿using Test.API.Framework;
-using Test.API.Framework.Models;
+﻿using log4net;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Test.API.Framework;
+using Test.API.Framework.Models;
 
 namespace Test.API.Restful_Booker
 {
+    [TestClass]
     public class BaseTest
     {
+
         #region Members
 
         protected RestClient client;
+        private ILog log = LogManager.GetLogger(typeof(BaseTest));
+
+        public TestContext TestContext { get; set; }
 
         public BaseTest()
         {
             client = new RestClient();
+        }
+
+
+        [AssemblyInitialize]
+        public static void Configure(TestContext tc)
+        {
+            log4net.Config.XmlConfigurator.Configure();
+        }
+
+        [TestInitialize]
+        public void MyTestInit()
+        {
+            log.Info("********Starting Test:" + TestContext.TestName + "********");
+        }
+
+        [TestCleanup]
+        public void MyTestCleanUp()
+        {
+            log.Info("********End Test:" + TestContext.TestName + "********" + Environment.NewLine);
         }
 
         #endregion
@@ -49,7 +75,7 @@ namespace Test.API.Restful_Booker
                 Helper.GenerateRandomName(100));
 
 
-            return client.Post<Booking, CreatedBooking >("booking", newBooking);
+            return client.Post<Booking, CreatedBooking>("booking", newBooking);
         }
 
         #endregion

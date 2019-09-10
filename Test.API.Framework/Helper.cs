@@ -47,15 +47,6 @@ namespace Test.API.Framework
             Thread.Sleep(500);
             return new Random().Next(1, int.MaxValue);
         }
-
-        /// <summary>
-        /// Log information to test results.
-        /// </summary>
-        /// <param name="info">Information to be output in test results.</param>
-        public static void Log(string info)
-        {
-            Console.WriteLine(info);
-        }
     }
 
     public enum Verb
